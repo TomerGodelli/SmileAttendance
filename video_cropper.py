@@ -36,7 +36,7 @@ def crop_video(file_path, n_participants):
     while cap.isOpened():
         ret, frame = cap.read()
         if ret:
-            vid_inx = 0  
+            vid_inx = 0
             for i in range(vert_divisions):
                 for j in range(horiz_divisions):
                     # Get top left corner coordinates of current tile
