@@ -13,6 +13,8 @@ scale_factor = 2  # smile detection sensitivity (should be above 1, default is 1
 text_read_frame_rate = 1
 min_threshold = 3
 tesseract_cmd_path = 'C:\Program Files\Tesseract-OCR\\tesseract.exe'
+name_height_ratio = 0.083
+name_width_ratio = 0.3125
 
 
 

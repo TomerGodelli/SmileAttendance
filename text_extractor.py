@@ -13,6 +13,7 @@ pytesseract.pytesseract.tesseract_cmd = prms.tesseract_cmd_path
 
 
 def extract_text_from_img(img):
+    img = crop_name_from_image(img)
     im = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     im = im.convert('L')
     im_inv = ImageOps.invert(im)
@@ -21,6 +22,13 @@ def extract_text_from_img(img):
     if striped_name:
         return striped_name
     return None
+
+
+def crop_name_from_image(img):
+    height, width, channels = img.shape
+    name_height = int(height * prms.name_height_ratio)
+    name_width = int(width * prms.name_width_ratio)
+    return img[height-name_height:height, 0:name_width]
 
 
 def extract_text_from_video(file_name):
