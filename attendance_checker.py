@@ -2,10 +2,10 @@ import os
 import platform
 from datetime import datetime
 import cv2
+import params as prms
 import smile_detector as sd
 import text_extractor as te
 import video_cropper as vcr
-import params as prms
 
 
 def get_creation_date(input_file):
@@ -43,9 +43,10 @@ def check_attendance(input_file, num_of_participants, output_folder, start_sec, 
 
     # results dict
     participants = {}
-    for filename in os.listdir('tmp'):
+    folder_path = os.path.abspath('tmp')
+    for filename in os.listdir(folder_path):
         print('processing file {}'.format(filename))
-        file_path = os.path.abspath('tmp/' + filename)
+        file_path = os.path.join(folder_path, filename)
         vc = cv2.VideoCapture(file_path)
         found_smile = False
         smile_img = None
@@ -87,8 +88,15 @@ def check_attendance(input_file, num_of_participants, output_folder, start_sec, 
             if found_smile and found_name:
                 break
 
+        # Release original video
+        vc.release()
+        cv2.destroyAllWindows()
+
         print('{} proceeded done. {} is smiling={}'.format(filename, name, found_smile))
         participants[filename] = name, found_smile, smile_img
+
+        # delete tmp file after processing it
+        os.remove(file_path)
 
     # create dir for output
     output_dir_path = os.path.abspath(output_folder + '/' + creation_date)

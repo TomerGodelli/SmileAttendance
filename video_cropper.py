@@ -40,6 +40,12 @@ def crop_video(file_path, n_participants, start, end):
     # Init output videos
     out_videos = [0] * n_participants
 
+    # create tmp dir for cropped if not exist
+    tmp_dir = os.path.abspath('tmp')
+    if not os.path.exists(tmp_dir):
+        print("created")
+        os.makedirs(tmp_dir)
+
     for i in range(n_participants):
         out_videos[i] = cv2.VideoWriter(os.path.abspath('tmp/out{}.avi'.format(str(i))),
                                         cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'),
