@@ -1,9 +1,15 @@
 import numpy as np
 import cv2
 import params as prms
+import os
 
 
 def crop_video(file_path, n_participants):
+    """
+    Crop the given video to n_participants separated videos and stores them in tmp folder
+    :param file_path: path to a video to crop
+    :param n_participants: number of separated videos to crop the video to
+    """
     print('cropping participants video {}'.format(file_path))
 
     # get video and read first frame for dimensions
@@ -29,7 +35,7 @@ def crop_video(file_path, n_participants):
     out_videos = [0] * n_participants
 
     for i in range(n_participants):
-        out_videos[i] = cv2.VideoWriter('tmp\\out{}.avi'.format(str(i)), cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'),
+        out_videos[i] = cv2.VideoWriter(os.path.abspath('tmp/out{}.avi'.format(str(i))), cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'),
                                         fps,
                                         (seg_w, seg_h))
 

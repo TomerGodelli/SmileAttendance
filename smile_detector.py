@@ -1,12 +1,18 @@
 import cv2
 import params as prms
+import os
 
-cascade_face = cv2.CascadeClassifier('cascades\\haarcascade_frontalface_default.xml')
-cascade_eye = cv2.CascadeClassifier('cascades\\haarcascade_eye.xml')
-cascade_smile = cv2.CascadeClassifier('cascades\\haarcascade_smile.xml')
+cascade_face = cv2.CascadeClassifier(os.path.abspath('cascades/haarcascade_frontalface_default.xml'))
+cascade_eye = cv2.CascadeClassifier(os.path.abspath('cascades/haarcascade_eye.xml'))
+cascade_smile = cv2.CascadeClassifier(os.path.abspath('cascades/haarcascade_smile.xml'))
 
 
 def detect_smile_from_img(img):
+    """
+    Detect a smile in a given image
+    :param img: image to detect smile in
+    :return: Tuple with a boolean representing if a smile has detected, and the image with/without the detected smile
+    """
     # convert to greyscale
     gray_scale_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -35,6 +41,11 @@ def detect_smile_from_img(img):
 
 
 def detect_smile_from_video(file_name):
+    """
+    Detects smile in a given video
+    :param file_name: video to detect smile in
+    :return: Tuple with a boolean representing if a smile has detected, and an image from the video with/without the detected smile
+    """
     vc = cv2.VideoCapture(file_name)
     is_smile = False
     smile_img = None
