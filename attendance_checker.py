@@ -27,6 +27,18 @@ def get_creation_date(input_file):
     return datetime.fromtimestamp(res).strftime('%Y-%m-%d %H%M%S')
 
 
+def updated_user_name(name, names_attendanced):
+    i = 2
+    updated_name = name
+    while 1:
+        if updated_name in names_attendanced:
+            updated_name = name + ' ' + str(i)
+            i += 1
+        else:
+            names_attendanced.append(updated_name)
+            return updated_name
+
+
 def check_attendance(input_file, num_of_participants, output_folder, start_sec, end_sec):
     """
     Checks which users smiled in given video of zoom conversation and stores the results inside the output_folder
@@ -93,6 +105,7 @@ def check_attendance(input_file, num_of_participants, output_folder, start_sec, 
         cv2.destroyAllWindows()
 
         print('{} proceeded done. {} is smiling={}'.format(filename, name, found_smile))
+
         participants[filename] = name, found_smile, smile_img
 
         # delete tmp file after processing it
@@ -108,12 +121,14 @@ def check_attendance(input_file, num_of_participants, output_folder, start_sec, 
         os.remove(output_file_path)
 
     with open(output_file_path, 'a') as attendancy_list:
+        names_attendanced = []
         for p in participants.values():
             if p[1]:  # is_smile
-                cv2.imwrite(os.path.abspath(output_folder + '/' + creation_date + '/{}.jpg'.format(p[0])), p[2])
                 username = 'Unidentified' if not p[0] else p[0]
-                print('{} is smiling!'.format(username))
-                attendancy_list.write(username + '\n')
+                updated_name = updated_user_name(username, names_attendanced)
+                cv2.imwrite(os.path.abspath(output_folder + '/' + creation_date + '/{}.jpg'.format(updated_name)), p[2])
+                print('{} is smiling!'.format(updated_name))
+                attendancy_list.write(updated_name + '\n')
 
     print('end')
 
