@@ -8,8 +8,7 @@ import params as prms
 
 pattern = re.compile(r'[^A-Za-z ]+')
 
-# Mention the installed location of Tesseract-OCR in your system if 64 bit
-pytesseract.pytesseract.tesseract_cmd = prms.tesseract_cmd_path_64
+
 
 
 def extract_text_from_img(img):
@@ -27,9 +26,18 @@ def extract_text_from_img(img):
     try:
         name = image_to_string(im_inv)
     except:
-        # Mention the installed location of Tesseract-OCR in your system as 32 bit
-        pytesseract.pytesseract.tesseract_cmd = prms.tesseract_cmd_path_32
-        name = image_to_string(im_inv)
+        try:
+            # Mention the installed location of Tesseract-OCR in your system if 64 bit
+            pytesseract.pytesseract.tesseract_cmd = prms.tesseract_cmd_path_64
+            name = image_to_string(im_inv)
+
+        except:
+            try:
+                # Mention the installed location of Tesseract-OCR in your system as 32 bit
+                pytesseract.pytesseract.tesseract_cmd = prms.tesseract_cmd_path_32
+                name = image_to_string(im_inv)
+            except:
+                raise ValueError('Could not locate tesseract OCR module')
 
     striped_name = pattern.sub('', name).strip()
     if striped_name:

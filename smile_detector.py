@@ -34,9 +34,13 @@ def detect_smile_from_img(img):
             # add red smile rectangle to original img
             cv2.rectangle(face_color, (x_smile, y_smile), (x_smile + w_smile, y_smile + h_smile), (0, 0, 255), 2)
             # smile found - return true and the smile img
+            # cv2.imshow('image', img)
+            # cv2.waitKey(0)
             return True, img
 
     # smile not found
+    # cv2.imshow('image', img)
+    # cv2.waitKey(0)
     return False, img
 
 

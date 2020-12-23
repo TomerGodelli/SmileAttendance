@@ -39,6 +39,69 @@ def updated_user_name(name, names_attendanced):
             return updated_name
 
 
+def summerize_results(participants):
+    """
+    return sumurized lists of smiling,not smiling and unidentified participants with their name and image
+    :param participants: list of participants tuples of (name,isSmile,img)
+    :return: 3 list of tuples(name,img)
+    """
+    smiling = []
+    not_smiling = []
+    unidentified = []
+    for p in participants.values():
+        if not p[0]:  # un identified name
+            unidentified.append(p)
+
+        username = p[0]
+        updated_username = updated_user_name(username, [i[0] for i in smiling])
+        smiling.append((updated_username, p[2])) if p[1] else not_smiling.append(p)
+    return smiling, not_smiling, unidentified
+
+
+def write_results(output_folder, creation_date, participants):
+    smiling, not_smiling, unidentified = summerize_results(participants)
+
+    # create dir for output files
+    output_dir_path = os.path.abspath(output_folder + '/' + creation_date)
+    output_smiling_dir_path = os.path.abspath(output_folder + '/' + creation_date + '/smiling')
+    output_not_smiling_dir_path = os.path.abspath(output_folder + '/' + creation_date + '/not smiling')
+    output_unidentified_dir_path = os.path.abspath(output_folder + '/' + creation_date + '/unidentified')
+    output_attendancy_file_path = os.path.abspath(output_folder + '/' + creation_date + '/Attendancy List.txt')
+
+    if not os.path.exists(output_dir_path):
+        os.makedirs(output_dir_path)
+    if not os.path.exists(output_smiling_dir_path):
+        os.makedirs(output_smiling_dir_path)
+    if not os.path.exists(output_not_smiling_dir_path):
+        os.makedirs(output_not_smiling_dir_path)
+    if not os.path.exists(output_unidentified_dir_path):
+        os.makedirs(output_unidentified_dir_path)
+
+    if os.path.exists(output_attendancy_file_path):
+        os.remove(output_attendancy_file_path)
+
+    with open(output_attendancy_file_path, 'a') as attendancy_list:
+        attendancy_list.write('Smiling Participants:' + '\n')
+        for p in smiling:
+            attendancy_list.write(p[0] + '\n')
+            cv2.imwrite(os.path.abspath(output_folder + '/' + creation_date + '/smiling' + '/{}.jpg'.format(p[0])),
+                        p[1])
+
+        attendancy_list.write('\nNot Smiling Participants:' + '\n')
+        for p in not_smiling:
+            attendancy_list.write(p[0] + '\n')
+            cv2.imwrite(os.path.abspath(output_folder + '/' + creation_date + '/not smiling' + '/{}.jpg'.format(p[0])),
+                        p[1])
+
+        attendancy_list.write('\nUnidentified Participants:' + '\n')
+        attendancy_list.write(
+            '{} participants was unidentified by their name.\nYou can see their picture under unidentified folder'.format(
+                len(unidentified)))
+        for p in unidentified:
+            cv2.imwrite(os.path.abspath(output_folder + '/' + creation_date + '/unidentified' + '/{}.jpg'.format(p[0])),
+                        p[1])
+
+
 def check_attendance(input_file, num_of_participants, output_folder, start_sec, end_sec):
     """
     Checks which users smiled in given video of zoom conversation and stores the results inside the output_folder
@@ -51,7 +114,6 @@ def check_attendance(input_file, num_of_participants, output_folder, start_sec, 
     """
     # crop video into single-participants files
     vcr.crop_video(input_file, num_of_participants, start_sec, end_sec)
-    creation_date = get_creation_date(input_file)
 
     # results dict
     participants = {}
@@ -111,24 +173,11 @@ def check_attendance(input_file, num_of_participants, output_folder, start_sec, 
         # delete tmp file after processing it
         os.remove(file_path)
 
-    # create dir for output
-    output_dir_path = os.path.abspath(output_folder + '/' + creation_date)
-    if not os.path.exists(output_dir_path):
-        os.makedirs(output_dir_path)
+    # get video creation date for output sub folder
+    creation_date = get_creation_date(input_file)
 
-    output_file_path = os.path.abspath(output_folder + '/' + creation_date + '/Attendancy List.txt')
-    if os.path.exists(output_file_path):
-        os.remove(output_file_path)
-
-    with open(output_file_path, 'a') as attendancy_list:
-        names_attendanced = []
-        for p in participants.values():
-            if p[1]:  # is_smile
-                username = 'Unidentified' if not p[0] else p[0]
-                updated_name = updated_user_name(username, names_attendanced)
-                cv2.imwrite(os.path.abspath(output_folder + '/' + creation_date + '/{}.jpg'.format(updated_name)), p[2])
-                print('{} is smiling!'.format(updated_name))
-                attendancy_list.write(updated_name + '\n')
+    # write results
+    write_results(output_folder, creation_date, participants)
 
     print('end')
 
