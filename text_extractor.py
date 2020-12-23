@@ -8,8 +8,8 @@ import params as prms
 
 pattern = re.compile(r'[^A-Za-z ]+')
 
-# Mention the installed location of Tesseract-OCR in your system
-# pytesseract.pytesseract.tesseract_cmd = prms.tesseract_cmd_path
+# Mention the installed location of Tesseract-OCR in your system if 64 bit
+pytesseract.pytesseract.tesseract_cmd = prms.tesseract_cmd_path_64
 
 
 def extract_text_from_img(img):
@@ -22,7 +22,15 @@ def extract_text_from_img(img):
     im = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     im = im.convert('L')
     im_inv = ImageOps.invert(im)
-    name = image_to_string(im_inv)
+
+    # try extract text depends on tesseract_cmd exe file location
+    try:
+        name = image_to_string(im_inv)
+    except:
+        # Mention the installed location of Tesseract-OCR in your system as 32 bit
+        pytesseract.pytesseract.tesseract_cmd = prms.tesseract_cmd_path_32
+        name = image_to_string(im_inv)
+
     striped_name = pattern.sub('', name).strip()
     if striped_name:
         return striped_name
@@ -38,4 +46,4 @@ def crop_name_from_image(img):
     height, width, channels = img.shape
     name_height = int(height * prms.name_height_ratio)
     name_width = int(width * prms.name_width_ratio)
-    return img[height-name_height:height, 0:name_width]
+    return img[height - name_height:height, 0:name_width]
