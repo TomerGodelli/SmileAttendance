@@ -11,7 +11,7 @@ offset = {
 
 # smile detection params
 smile_read_frame_rate = 1
-scale_factor = 1.01  # smile detection sensitivity (should be above 1, default is 1.7)
+scale_factor = 2  # smile detection sensitivity (should be above 1, default is 1.7)
 
 # text extractor params
 text_read_frame_rate = 1

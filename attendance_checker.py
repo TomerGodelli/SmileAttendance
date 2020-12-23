@@ -51,10 +51,10 @@ def summerize_results(participants):
     for p in participants.values():
         if not p[0]:  # un identified name
             unidentified.append(p)
-
-        username = p[0]
-        updated_username = updated_user_name(username, [i[0] for i in smiling])
-        smiling.append((updated_username, p[2])) if p[1] else not_smiling.append(p)
+        else:
+            username = p[0]
+            updated_username = updated_user_name(username, [i[0] for i in smiling])
+            smiling.append((updated_username, p[2])) if p[1] else not_smiling.append(p)
     return smiling, not_smiling, unidentified
 
 
