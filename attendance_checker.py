@@ -50,11 +50,11 @@ def summerize_results(participants):
     unidentified = []
     for p in participants.values():
         if not p[0]:  # un identified name
-            unidentified.append(p)
+            unidentified.append((updated_user_name('unidentified', [i[0] for i in unidentified]), p[2]))
         else:
             username = p[0]
             updated_username = updated_user_name(username, [i[0] for i in smiling])
-            smiling.append((updated_username, p[2])) if p[1] else not_smiling.append(p)
+            smiling.append((updated_username, p[2])) if p[1] else not_smiling.append((updated_username, p[2]))
     return smiling, not_smiling, unidentified
 
 
@@ -124,6 +124,7 @@ def check_attendance(input_file, num_of_participants, output_folder, start_sec, 
         vc = cv2.VideoCapture(file_path)
         found_smile = False
         smile_img = None
+        only_face_img = None
         text_found = {}
         found_name = False
         name = ''
@@ -142,7 +143,11 @@ def check_attendance(input_file, num_of_participants, output_folder, start_sec, 
 
             # detect smile
             if not found_smile and frame_counter % smile_read_frame_rate == 0:
-                found_smile, smile_img = sd.detect_smile_from_img(frame)
+                found_smile, found_face, img = sd.detect_smile_from_img(frame)
+                if found_smile:
+                    smile_img = img
+                elif found_face or only_face_img is None:
+                    only_face_img = img
 
             if not found_name and frame_counter % text_read_frame_rate == 0:
                 name = te.extract_text_from_img(frame)
@@ -168,7 +173,10 @@ def check_attendance(input_file, num_of_participants, output_folder, start_sec, 
 
         print('{} proceeded done. {} is smiling={}'.format(filename, name, found_smile))
 
-        participants[filename] = name, found_smile, smile_img
+        if found_smile:
+            participants[filename] = name, found_smile, smile_img
+        else:
+            participants[filename] = name, found_smile, only_face_img
 
         # delete tmp file after processing it
         os.remove(file_path)

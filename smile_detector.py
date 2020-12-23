@@ -25,23 +25,20 @@ def detect_smile_from_img(img):
         face_grayscale = gray_scale_img[y:y + h, x:x + w]
         face_color = img[y:y + h, x:x + w]
 
-        # eye = cascade_eye.detectMultiScale(ri_grayscale, 1.2, 18)
-        # for (x_eye, y_eye, w_eye, h_eye) in eye:
-        #     cv2.rectangle(ri_color, (x_eye, y_eye), (x_eye + w_eye, y_eye + h_eye), (0, 180, 60), 2)
-
         smile = cascade_smile.detectMultiScale(face_grayscale, prms.scale_factor, 20)
         for (x_smile, y_smile, w_smile, h_smile) in smile:
             # add red smile rectangle to original img
             cv2.rectangle(face_color, (x_smile, y_smile), (x_smile + w_smile, y_smile + h_smile), (0, 0, 255), 2)
             # smile found - return true and the smile img
-            # cv2.imshow('image', img)
-            # cv2.waitKey(0)
-            return True, img
+            return True,True, img
 
-    # smile not found
+        # only face found
+        return False, True, img
+
+    # smile and face not found
     # cv2.imshow('image', img)
     # cv2.waitKey(0)
-    return False, img
+    return False, False, img
 
 
 def detect_smile_from_video(file_name):

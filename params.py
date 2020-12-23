@@ -11,10 +11,10 @@ offset = {
 
 # smile detection params
 smile_read_frame_rate = 1
-scale_factor = 2  # smile detection sensitivity (should be above 1, default is 1.7)
+scale_factor = 1.1  # smile detection sensitivity (should be above 1, default is 1.7)
 
 # text extractor params
-text_read_frame_rate = 1
+text_read_frame_rate = 2
 min_threshold = 3
 tesseract_cmd_path_64 = os.path.abspath('C:/Program Files/Tesseract-OCR/tesseract.exe')
 tesseract_cmd_path_32 = os.path.abspath('C:/Program Files (x86)/Tesseract-OCR/tesseract.exe')
