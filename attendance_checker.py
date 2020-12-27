@@ -29,6 +29,12 @@ def get_creation_date(input_file):
 
 
 def updated_user_name(name, names_attendanced):
+    """
+    if user name appears more then once, add its index in the end
+    :param name: participant name found by OCR
+    :param names_attendanced: all participants names found till now
+    :return: updated name
+    """
     i = 2
     updated_name = name
     while 1:
@@ -60,6 +66,12 @@ def summerize_results(participants):
 
 
 def write_results(output_folder, creation_date, participants):
+    """
+    write attendance result to output folder
+    :param output_folder: output folder
+    :param creation_date: video file creation date- used for folder name
+    :param participants: participants attendance result
+    """
     smiling, not_smiling, unidentified = summerize_results(participants)
 
     # create dir for output files
@@ -191,16 +203,3 @@ def check_attendance(input_file, num_of_participants, output_folder, start_sec, 
     print('end')
 
 
-start_time = time.time()
-check_attendance('/Users/shaharfreiman/Desktop/Degree/Y4S1/Principles of Programming Languages/Project/SmileAttendance/input/2.mp4', 2, '/Users/shaharfreiman/Desktop/Degree/Y4S1/Principles of Programming Languages/Project/SmileAttendance/output/output1', 1, 6)
-time1 = time.time()
-check_attendance('/Users/shaharfreiman/Desktop/Degree/Y4S1/Principles of Programming Languages/Project/SmileAttendance/input/4_1.mp4', 4, '/Users/shaharfreiman/Desktop/Degree/Y4S1/Principles of Programming Languages/Project/SmileAttendance/output/output2',10, 15)
-time2 = time.time()
-check_attendance('/Users/shaharfreiman/Desktop/Degree/Y4S1/Principles of Programming Languages/Project/SmileAttendance/input/12.mp4', 6, '/Users/shaharfreiman/Desktop/Degree/Y4S1/Principles of Programming Languages/Project/SmileAttendance/output/output3', 4, 9)
-time3 = time.time()
-check_attendance('/Users/shaharfreiman/Desktop/Degree/Y4S1/Principles of Programming Languages/Project/SmileAttendance/input/12.mp4', 9, '/Users/shaharfreiman/Desktop/Degree/Y4S1/Principles of Programming Languages/Project/SmileAttendance/output/output4', 122, 127)
-time4 = time.time()
-check_attendance('/Users/shaharfreiman/Desktop/Degree/Y4S1/Principles of Programming Languages/Project/SmileAttendance/input/12.mp4', 12, '/Users/shaharfreiman/Desktop/Degree/Y4S1/Principles of Programming Languages/Project/SmileAttendance/output/output5', 355, 360)
-time5 = time.time()
-
-print('2 Students: {}\n4 Students: {}\n6 Students: {}\n9 Students: {}\n12 Students: {}'.format((time1-start_time), (time2-time1), time3-time2, time4-time3, time5-time4))
